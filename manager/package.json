@@ -1,0 +1,16 @@
+{
+  "name": "ocx",
+  "version": "0.1.0",
+  "description": "OpenCode 확장 관리 프로그램 (계획/낮/밤/오토 모드)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "bunx tsc --noEmit",
+    "mock-llm": "bun run test/mock-llm.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.8.0"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "java",
+  "description": "Java 백엔드/서비스 개발 (Maven/Gradle)",
+  "verify": { "build": "mvn -q -DskipTests package", "test": "mvn -q test" },
+  "taskTimeoutMinutes": 30
+}
