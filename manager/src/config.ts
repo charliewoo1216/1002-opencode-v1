@@ -1,5 +1,6 @@
 // 관리 프로그램 설정(JSON) 로드와 검증, 원본 OpenCode 설정 생성
 import { readFileSync, existsSync } from "node:fs"
+import { dirname, join, resolve } from "node:path"
 
 export interface ModelEntry {
   /** 접속 주소 (예: http://host:8000/v1) */
@@ -58,6 +59,16 @@ export interface SafetyConfig {
 }
 
 export class ConfigError extends Error {}
+
+/**
+ * opencode.command 를 설정에서 생략했을 때 쓸 기본 명령.
+ * ocx 실행 파일과 같은 폴더에 opencode(.exe)가 있으면 그것을, 없으면 PATH 의 opencode 를 쓴다.
+ * (배포 폴더를 PATH 에 등록하면 어느 프로젝트 폴더에서 실행해도 같은 폴더의 opencode.exe 를 찾는다)
+ */
+export function defaultOpencodeCommand(execPath = process.execPath): string[] {
+  const beside = join(dirname(execPath), process.platform === "win32" ? "opencode.exe" : "opencode")
+  return existsSync(beside) ? [beside] : ["opencode"]
+}
 
 export const DAY_DEFAULTS: DayConfig = {
   attemptBudgetMinutes: 10,
@@ -147,7 +158,6 @@ export const AUTO_DEFAULTS: AutoConfig = {
 }
 
 const DEFAULTS = {
-  opencode: { command: ["opencode"] },
   closedNetwork: true,
   referenceDir: "reference",
 }
@@ -198,7 +208,7 @@ export function normalizeConfig(raw: unknown): OcxConfig {
   }
 
   return {
-    opencode: { command: (opencodeRaw as string[] | undefined) ?? DEFAULTS.opencode.command },
+    opencode: { command: (opencodeRaw as string[] | undefined) ?? defaultOpencodeCommand() },
     models,
     defaultModel,
     smallModel,
@@ -335,7 +345,12 @@ export function loadConfig(path: string): OcxConfig {
   } catch (e) {
     fail(`설정 파일이 올바른 JSON이 아닙니다 (${path}): ${(e as Error).message}`)
   }
-  return normalizeConfig(raw)
+  const cfg = normalizeConfig(raw)
+  // './opencode.exe' 처럼 상대 경로로 적은 실행 파일은 현재 폴더가 아니라 설정 파일이 있는 폴더 기준으로 본다
+  // (프로젝트 폴더에서 실행해도 같은 곳을 가리키게 하기 위함)
+  const first = cfg.opencode.command[0]!
+  if (/^\.{1,2}[\\/]/.test(first)) cfg.opencode.command = [resolve(dirname(path), first), ...cfg.opencode.command.slice(1)]
+  return cfg
 }
 
 /** 모델 선택값("모델이름")을 원본 OpenCode의 "프로바이더/모델" 형식으로 변환 */

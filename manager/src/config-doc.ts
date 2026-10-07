@@ -11,7 +11,7 @@ export interface ConfigKeyDoc {
 const j = (v: unknown) => JSON.stringify(v)
 
 export const CONFIG_DOCS: ConfigKeyDoc[] = [
-  { key: "opencode.command", desc: "원본 OpenCode 실행 명령(문자열 배열). 예: [\"opencode\"] 또는 [\"C:/tools/opencode.exe\"]", def: j(["opencode"]) },
+  { key: "opencode.command", desc: "원본 OpenCode 실행 명령(문자열 배열). 예: [\"opencode\"] 또는 [\"C:/tools/opencode.exe\"]. './opencode.exe' 처럼 상대 경로는 설정 파일이 있는 폴더 기준입니다", def: "생략하면 ocx 실행 파일과 같은 폴더의 opencode(.exe), 없으면 PATH 의 opencode" },
   { key: "models.<이름>.baseURL", desc: "모델 서버 주소 (http:// 또는 https://). OpenAI 호환 API의 /v1 까지" },
   { key: "models.<이름>.model", desc: "서버에 보낼 모델 ID" },
   { key: "models.<이름>.apiKey", desc: "API 키 (키가 필요 없는 서버는 EMPTY)", def: j("EMPTY") },
@@ -65,7 +65,7 @@ export function renderConfigKeys(): string {
 export function exampleConfig(): string {
   return JSON.stringify(
     {
-      opencode: { command: ["opencode"] },
+      // opencode.command 는 생략하면 ocx 와 같은 폴더의 opencode.exe, 없으면 PATH 의 opencode 를 씁니다
       models: {
         qwen38: { label: "Qwen 3.8 27B", baseURL: "http://llm-a.internal:8000/v1", model: "qwen3.8-27b", apiKey: "EMPTY", contextLimit: 32768, outputLimit: 4096 },
         oss: { label: "GPT-OSS", baseURL: "http://llm-b.internal:8001/v1", model: "gpt-oss", apiKey: "EMPTY", contextLimit: 32768, outputLimit: 4096 },

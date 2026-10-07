@@ -118,6 +118,15 @@ describe("사용 가이드", () => {
     expect(renderGuide("없음없음")).toContain("알 수 없는 주제")
   })
 
+  test("VS Code/PATH 가이드가 있고, 주제는 대소문자를 구분하지 않고 찾는다", () => {
+    expect(GUIDE_TOPICS).toContain("VSCode사용")
+    const g = renderGuide("vscode")
+    expect(g).toContain("PATH")
+    expect(g).toContain("OCX_CONFIG")
+    expect(g).toContain(".gitignore")
+    expect(renderOverview()).toContain("ocx guide VSCode사용")
+  })
+
   test("ocx guide 명령", async () => {
     expect((await run(["guide"])).out).toContain("주제를 골라")
     expect((await run(["guide", "안전규칙"])).out).toContain("Git")

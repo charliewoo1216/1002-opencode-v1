@@ -20,33 +20,45 @@ GitHub은 파일 하나가 100MB를 넘으면 올릴 수 없어서, 실행 파�
    - GitHub에서 각 파일을 열고 **Download raw file** 버튼을 누르거나, 저장소 전체를 clone/ZIP으로 받아도 됩니다.
 2. `join-parts.bat` 을 더블클릭합니다. → `ocx-windows-x64-package.zip` 이 만들어집니다.
    (직접 하려면 명령 프롬프트에서: `copy /b ocx-package.zip.part00 + ocx-package.zip.part01 + ocx-package.zip.part02 + ocx-package.zip.part03 ocx-windows-x64-package.zip`)
-3. 화면에 나오는 해시(SHA-256)의 앞 16자리가 `SHA256SUMS.txt` 의 마지막 줄과 같은지 확인합니다 (`644bbcce10446fbe...`).
+3. 화면에 나오는 해시(SHA-256)의 앞 16자리가 `SHA256SUMS.txt` 의 마지막 줄과 같은지 확인합니다 (`517a4a391fb84fd3...`).
 4. zip의 압축을 풉니다. 안에 `ocx.exe`, `opencode.exe`, `ocx.config.example.json`, `README.txt`, `docs\user-guide.md`, `profiles-example\`, `MANIFEST.txt` 가 있습니다.
 
-## 2. 설정 (JSON 파일)
+## 2. VS Code(또는 아무 터미널)에서 쓰려면 — PATH 등록과 설정 위치
 
-1. 압축을 푼 폴더에서 `ocx.config.example.json` 을 **`ocx.config.json`** 으로 복사합니다.
+`ocx`는 원본 `opencode`처럼 **프로젝트 폴더의 터미널에서 실행**하는 프로그램입니다. 명령 이름은 **`ocx`** 입니다 (`ocx.exe`).
+
+**① PATH 등록 (한 번만)**
+- 압축을 푼 폴더(`ocx.exe`와 `opencode.exe`가 있는 폴더, 예: `C:\tools\ocx`)를 Windows PATH에 추가합니다.
+  시작 메뉴에서 "환경 변수" 검색 → "계정에 대한 환경 변수 편집" → 사용자 변수 `Path` → 편집 → 새로 만들기 → 폴더 경로.
+- **VS Code를 완전히 종료했다가 다시 실행**해야 터미널에 반영됩니다.
+- 원본 `opencode`를 이미 PATH에 등록해 두셨다면 그대로 두세요. `ocx`는 기본으로 `ocx.exe`와 **같은 폴더의 `opencode.exe`** 를 쓰고, 없으면 PATH의 `opencode`를 씁니다. PATH의 기존 `opencode`를 쓰고 싶으면 설정에 `"opencode": { "command": ["opencode"] }` 를 적으세요 (원본 버전이 다르면 일부 기능이 다르게 동작할 수 있습니다).
+
+**② 설정 파일 (JSON) — 한 곳에 두고 모든 프로젝트가 같이 쓰기 (권장)**
+1. `ocx.config.example.json` 을 **`ocx.config.json`** 으로 복사합니다 (예: `C:\tools\ocx\ocx.config.json`).
 2. 메모장으로 열어 `models` 의 `baseURL` 과 `model` 을 사내 LLM 서버에 맞게 고칩니다.
    - 주소는 `http://서버주소:포트/v1` 형식이고 http도 됩니다.
    - API 키가 필요 없는 서버는 `"apiKey": "EMPTY"` 를 그대로 둡니다.
    - 모델 3개(`qwen38`, `oss`, `qwen25coder`)를 등록해 두고, 실행할 때 `--model 이름` 으로 하나를 고릅니다. 안 고르면 `defaultModel` 이 쓰입니다.
-3. `opencode.command` 는 같은 폴더의 `opencode.exe` 를 가리키도록 이미 되어 있습니다.
-4. 모든 설정 항목의 설명: `ocx.exe config keys`
+3. 사용자 환경 변수 **`OCX_CONFIG`** 를 그 파일의 전체 경로로 지정합니다. 그러면 어느 프로젝트 폴더에서 실행해도 설정을 찾습니다.
+   - 프로젝트마다 다르게 쓰려면 그 프로젝트 폴더에 `ocx.config.json` 을 두거나 `--config 파일` 을 지정하세요. (`OCX_CONFIG` 도 `--config` 도 없으면 **현재 폴더**의 `ocx.config.json` 을 찾습니다.)
+4. 모든 설정 항목의 설명: `ocx config keys`
 
-## 3. 처음 써 보기
+## 3. 프로젝트에서 쓰기
 
-Windows Terminal(또는 명령 프롬프트)에서 압축을 푼 폴더로 이동한 뒤:
+VS Code로 프로젝트 폴더를 열고 **터미널(Ctrl+`)** 에서 바로 실행합니다. 작업 폴더는 터미널의 현재 폴더입니다.
 
 ```
-ocx.exe config check --online       설정과 모델 서버 연결 점검
-ocx.exe --help                      전체 도움말 (명령별: ocx.exe <명령> --help, 가이드: ocx.exe guide)
-ocx.exe day "한 가지 작업 지시"        낮: 멈추면 자동으로 이어서/새 세션으로 재시도
-ocx.exe plan --profile python "지시"  계획서 만들기 (참조 자료는 작업 폴더의 reference\ 에)
-ocx.exe night                        퇴근 전에 걸어 두면 밤새 진행 (기본 07:00 종료)
-ocx.exe report                       아침에 결과 보기
+ocx config check --online            설정과 모델 서버 연결 점검 (처음에 꼭 해 보세요)
+ocx --help                            전체 도움말 (명령별: ocx <명령> --help,  가이드: ocx guide)
+ocx day "한 가지 작업 지시"             낮: 멈추면 자동으로 이어서/새 세션으로 재시도
+ocx day                               원본 화면을 멈춤에 대비한 상태로 열기 (평소 opencode 쓰듯이)
+ocx plan --profile python "지시"       계획서 만들기 (참조 자료는 프로젝트의 reference\ 폴더에)
+ocx night                             퇴근 전에 걸어 두면 밤새 진행 (기본 07:00 종료)
+ocx report                            아침에 결과 보기
 ```
 
-`--dir 작업폴더` 로 작업할 폴더를 지정할 수 있고, 지정하지 않으면 현재 폴더를 씁니다.
+- 프로젝트 폴더에 `.plan/`(계획서), `.notes/`(참조 분석), `.batch/`(진행 상태·속도 기록·백업·리포트) 폴더가 만들어집니다. Git에 올리지 않으려면 `.gitignore`에 추가하세요.
+- 평소처럼 원본 `opencode`를 그대로 쓰는 것도 가능합니다 (이때는 ocx의 기능이 적용되지 않습니다).
 
 ## 4. 알아 둘 점
 

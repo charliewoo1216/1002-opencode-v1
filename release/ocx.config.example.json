@@ -1,9 +1,4 @@
 {
-  "opencode": {
-    "command": [
-      ".\\opencode.exe"
-    ]
-  },
   "models": {
     "qwen38": {
       "label": "Qwen 3.8 27B",

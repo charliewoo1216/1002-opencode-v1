@@ -57,6 +57,8 @@ ocx — OpenCode 확장 관리 프로그램 (폐쇄망·로컬 LLM용)
       ocx stats
   설정·서버 연결 점검
       ocx config check --online
+  VS Code 터미널에서 매번 쓰려면 (PATH 등록, 설정 위치)
+      ocx guide VSCode사용
   모델 바꿔서 실행
       아무 명령에나 --model <이름>
 
@@ -96,7 +98,40 @@ ocx — OpenCode 확장 관리 프로그램 (폐쇄망·로컬 LLM용)
    - 한 가지 일을 바로 시키기:   ocx day "<지시>"
    - 계획부터 세우고 맡기기:     ocx plan --profile python "<지시>" → ocx night
 
+VS Code 터미널에서 매번 쓰려면 ocx 폴더를 PATH 에 등록하세요: ocx guide VSCode사용
+
 작업 폴더 안에는 ocx가 .plan(계획서), .notes(참조 분석), .batch(진행 상태·속도 기록·백업·리포트) 폴더를 만듭니다.
+```
+
+### VS Code(또는 아무 터미널)에서 쓰기 — PATH 등록과 설정 위치  (`ocx guide VSCode사용`)
+
+```text
+ocx 는 원본 opencode 와 마찬가지로 프로젝트 폴더의 터미널에서 실행하는 프로그램입니다. 명령 이름은 `ocx` 입니다.
+
+1. PATH 에 등록하기 (한 번만)
+   - ocx.exe 와 opencode.exe 가 들어 있는 폴더(예: C:\tools\ocx)를 Windows PATH 에 추가합니다.
+     시작 메뉴에서 "환경 변수" 검색 → "계정에 대한 환경 변수 편집" → 사용자 변수 Path → 편집 → 새로 만들기 → 폴더 경로 입력.
+   - 등록한 뒤에는 VS Code 를 완전히 종료했다가 다시 실행해야 터미널에 반영됩니다.
+   - 원본 opencode 를 이미 PATH 에 등록해 두셨다면 그대로 두세요. ocx 는 기본으로 ocx.exe 와 같은 폴더의 opencode.exe 를 쓰고, 없으면 PATH 의 opencode 를 씁니다.
+     PATH 에 있는 기존 opencode 를 쓰고 싶으면 설정에 "opencode": { "command": ["opencode"] } 를 적으세요 (원본 버전이 달라지면 일부 기능이 다르게 동작할 수 있습니다).
+
+2. 설정 파일은 한 곳에 두고 모든 프로젝트가 같이 쓰기 (권장)
+   - ocx.config.example.json 을 ocx.config.json 으로 복사해 모델 주소를 고치고(예: C:\tools\ocx\ocx.config.json),
+     사용자 환경 변수 OCX_CONFIG 를 그 파일의 전체 경로로 지정합니다. 그러면 어느 프로젝트에서든 설정을 찾습니다.
+   - 프로젝트마다 다른 설정을 쓰려면 그 프로젝트 폴더에 ocx.config.json 을 두거나 --config 파일 을 지정하세요.
+     (OCX_CONFIG 도 --config 도 없으면 현재 폴더의 ocx.config.json 을 찾습니다)
+
+3. 프로젝트에서 쓰기
+   - VS Code 로 프로젝트 폴더를 열고 터미널(Ctrl+`)에서 바로 실행합니다. 작업 폴더는 터미널의 현재 폴더입니다.
+       ocx config check --online
+       ocx day "한 가지 작업 지시"
+       ocx plan --profile java "지시"      →   ocx night      →   (아침에) ocx report
+   - 평소처럼 원본 화면을 쓰고 싶으면 `ocx day` (지시문 없이)를 쓰세요. 멈춤에 대비한 상태로 원본 화면이 열립니다.
+     원본을 그대로 쓰는 `opencode` 명령도 그대로 쓸 수 있습니다 (이때는 ocx 의 기능이 적용되지 않습니다).
+
+4. 프로젝트 폴더에 생기는 것
+   - .plan/(계획서), .notes/(참조 분석), .batch/(진행 상태·속도 기록·백업·리포트) 폴더가 만들어집니다.
+     Git 에 올리지 않으려면 프로젝트의 .gitignore 에 `.plan/`, `.notes/`, `.batch/` 를 추가하세요.
 ```
 
 ### 퇴근 전에 맡겨 놓기 (밤 모드)  (`ocx guide 저녁에맡기기`)
@@ -538,8 +573,8 @@ ocx guide — 상황별 사용 가이드
 ## 설정 항목 (`ocx config keys`)
 
 ```text
-opencode.command              원본 OpenCode 실행 명령(문자열 배열). 예: ["opencode"] 또는 ["C:/tools/opencode.exe"]
-                              기본값: ["opencode"]
+opencode.command              원본 OpenCode 실행 명령(문자열 배열). 예: ["opencode"] 또는 ["C:/tools/opencode.exe"]. './opencode.exe' 처럼 상대 경로는 설정 파일이 있는 폴더 기준입니다
+                              기본값: 생략하면 ocx 실행 파일과 같은 폴더의 opencode(.exe), 없으면 PATH 의 opencode
 models.<이름>.baseURL           모델 서버 주소 (http:// 또는 https://). OpenAI 호환 API의 /v1 까지
 models.<이름>.model             서버에 보낼 모델 ID
 models.<이름>.apiKey            API 키 (키가 필요 없는 서버는 EMPTY)
