@@ -37,13 +37,15 @@ writeFileSync(join(dir, "ocx.config.example.json"), JSON.stringify(example, null
 const guide = join(root, "../docs/user-guide.md")
 if (existsSync(guide)) {
   mkdirSync(join(dir, "docs"), { recursive: true })
-  copyFileSync(guide, join(dir, "docs/사용설명서.md"))
+  copyFileSync(guide, join(dir, "docs/user-guide.md"))
 }
-if (existsSync(join(root, "profiles"))) cpSync(join(root, "profiles"), join(dir, "profiles-예시"), { recursive: true })
+if (existsSync(join(root, "profiles"))) cpSync(join(root, "profiles"), join(dir, "profiles-example"), { recursive: true })
 
 writeFileSync(
-  join(dir, "먼저읽어주세요.txt"),
-  `ocx 사용 시작하기
+  join(dir, "README.txt"),
+  // BOM을 붙여 Windows 메모장에서도 한글이 깨지지 않게 한다 (zip 안의 파일 이름은 한글 인코딩 문제를 피하려고 영문으로 둔다)
+  "\uFEFF" +
+    `ocx 사용 시작하기
 ==================
 
 1. ocx.config.example.json 을 ocx.config.json 으로 복사한 뒤, models 의 baseURL / model 을 사내 LLM 서버에 맞게 고칩니다.
@@ -61,7 +63,7 @@ Git 명령은 ocx가 실행하지 않습니다. 커밋은 직접 하세요.
 
 // 매니페스트
 const sha = (f: string) => createHash("sha256").update(readFileSync(f)).digest("hex")
-const files = [ocxName, ocName, "ocx.config.example.json", "먼저읽어주세요.txt"]
+const files = [ocxName, ocName, "ocx.config.example.json", "README.txt"]
 const manifest = [
   `ocx 배포 폴더 (${target})`,
   `만든 시각: ${new Date().toISOString()}`,

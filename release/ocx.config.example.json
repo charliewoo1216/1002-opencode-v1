@@ -1,0 +1,46 @@
+{
+  "opencode": {
+    "command": [
+      ".\\opencode.exe"
+    ]
+  },
+  "models": {
+    "qwen38": {
+      "label": "Qwen 3.8 27B",
+      "baseURL": "http://llm-a.internal:8000/v1",
+      "model": "qwen3.8-27b",
+      "apiKey": "EMPTY",
+      "contextLimit": 32768,
+      "outputLimit": 4096
+    },
+    "oss": {
+      "label": "GPT-OSS",
+      "baseURL": "http://llm-b.internal:8001/v1",
+      "model": "gpt-oss",
+      "apiKey": "EMPTY",
+      "contextLimit": 32768,
+      "outputLimit": 4096
+    },
+    "qwen25coder": {
+      "label": "Qwen 2.5 Coder",
+      "baseURL": "http://llm-c.internal:8002/v1",
+      "model": "qwen2.5-coder",
+      "apiKey": "EMPTY",
+      "contextLimit": 16384,
+      "outputLimit": 4096
+    }
+  },
+  "defaultModel": "qwen38",
+  "smallModel": "qwen25coder",
+  "day": {
+    "lightBody": {
+      "chat_template_kwargs": {
+        "enable_thinking": false
+      }
+    }
+  },
+  "night": {
+    "endTime": "07:00",
+    "verifyTimeoutMinutes": 30
+  }
+}

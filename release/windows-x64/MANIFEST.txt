@@ -1,0 +1,9 @@
+ocx 배포 폴더 (windows-x64)
+만든 시각: 2026-10-07T18:51:28.021Z
+
+c82528ad7daacd05     84240KB  ocx.exe
+77eccfd7ef057b15    125026KB  opencode.exe
+c6f200af02489b3a         1KB  ocx.config.example.json
+024ca656fe72a0d9         1KB  README.txt
+
+(해시는 SHA-256의 앞 16자리입니다)
