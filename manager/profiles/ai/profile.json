@@ -1,0 +1,6 @@
+{
+  "name": "ai",
+  "description": "AI/LLM 응용 개발 (에이전트, 도구 호출, MCP 서버 포함)",
+  "verify": { "test": "python -m pytest -q" },
+  "taskTimeoutMinutes": 20
+}

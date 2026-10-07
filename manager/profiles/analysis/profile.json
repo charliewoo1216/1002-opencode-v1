@@ -1,0 +1,6 @@
+{
+  "name": "analysis",
+  "description": "기존 코드 분석과 MD 문서 작성",
+  "verify": {},
+  "taskTimeoutMinutes": 30
+}
