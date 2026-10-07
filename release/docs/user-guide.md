@@ -129,7 +129,15 @@ ocx 는 원본 opencode 와 마찬가지로 프로젝트 폴더의 터미널에�
    - 평소처럼 원본 화면을 쓰고 싶으면 `ocx day` (지시문 없이)를 쓰세요. 멈춤에 대비한 상태로 원본 화면이 열립니다.
      원본을 그대로 쓰는 `opencode` 명령도 그대로 쓸 수 있습니다 (이때는 ocx 의 기능이 적용되지 않습니다).
 
-4. 프로젝트 폴더에 생기는 것
+4. 기존 opencode 설정(opencode.json)과의 관계
+   - 원본 opencode 는 사용자 폴더의 설정(예: C:\Users\<이름>\.config\opencode\opencode.json)을 읽습니다. ocx 는 그 파일을 수정하지 않고, 읽는 것도 막지 않습니다.
+     그래서 ocx 로 실행해도 기존 설정의 MCP 서버, 테마, 키 설정, 다른 프로바이더 등은 그대로 적용됩니다.
+   - 다만 ocx 가 실행할 때마다 주입하는 항목(ocx.config.json 의 models → 프로바이더·model·small_model, 자동 업데이트·공유 끄기, 권한 규칙, 계획/점검용 에이전트, 프로필 지침)은
+     같은 항목이면 기존 설정보다 우선합니다. 즉 ocx 로 실행하는 동안 모델은 ocx.config.json 에 등록한 것만 선택됩니다.
+   - 세션 기록은 원본과 같은 곳(사용자 폴더의 .local\share\opencode)에 저장됩니다. 원본 opencode 로 이어서 열어 볼 수도 있습니다.
+   - 기존 opencode.json 에 이미 사내 LLM 서버를 설정해 두셨다면, 같은 주소·모델 ID 를 ocx.config.json 의 models 에 옮겨 적으세요. (ocx 는 속도 측정과 정체 감지를 위해 모델 서버 주소를 자기 설정에서 직접 읽습니다.)
+
+5. 프로젝트 폴더에 생기는 것
    - .plan/(계획서), .notes/(참조 분석), .batch/(진행 상태·속도 기록·백업·리포트) 폴더가 만들어집니다.
      Git 에 올리지 않으려면 프로젝트의 .gitignore 에 `.plan/`, `.notes/`, `.batch/` 를 추가하세요.
 ```

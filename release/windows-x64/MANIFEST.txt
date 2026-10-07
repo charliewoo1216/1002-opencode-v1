@@ -1,7 +1,7 @@
 ocx 배포 폴더 (windows-x64)
-만든 시각: 2026-10-07T20:01:23.333Z
+만든 시각: 2026-10-07T20:06:58.290Z
 
-70b126b9a60e8d53     84246KB  ocx.exe
+79342be35c6c91f8     84248KB  ocx.exe
 77eccfd7ef057b15    125026KB  opencode.exe
 2f82374d23db5351         1KB  ocx.config.example.json
 5c1fc2c44e1480c7         2KB  README.txt

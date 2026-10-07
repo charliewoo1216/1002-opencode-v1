@@ -11,17 +11,15 @@
 
 둘 다 필요하고, 같은 폴더에 두면 됩니다. 자세한 설명은 `docs/user-guide.md`.
 
-## 1. 내려받기 (파일이 커서 4조각으로 나눠 놓았습니다)
+## 1. 내려받기
 
-GitHub은 파일 하나가 100MB를 넘으면 올릴 수 없어서, 실행 파일 묶음(zip, 약 87MB)을 23MB 조각 4개로 나눴습니다.
+실행 파일 묶음은 **`windows-x64/ocx-windows-x64-package.zip` 파일 하나**입니다 (약 87MB).
 
-1. `windows-x64/` 폴더의 파일을 **모두** 한 폴더에 받습니다.
-   - `ocx-package.zip.part00` ~ `part03` (4개), `join-parts.bat`, `SHA256SUMS.txt`
-   - GitHub에서 각 파일을 열고 **Download raw file** 버튼을 누르거나, 저장소 전체를 clone/ZIP으로 받아도 됩니다.
-2. `join-parts.bat` 을 더블클릭합니다. → `ocx-windows-x64-package.zip` 이 만들어집니다.
-   (직접 하려면 명령 프롬프트에서: `copy /b ocx-package.zip.part00 + ocx-package.zip.part01 + ocx-package.zip.part02 + ocx-package.zip.part03 ocx-windows-x64-package.zip`)
-3. 화면에 나오는 해시(SHA-256)의 앞 16자리가 `SHA256SUMS.txt` 의 마지막 줄과 같은지 확인합니다 (`517a4a391fb84fd3...`).
-4. zip의 압축을 풉니다. 안에 `ocx.exe`, `opencode.exe`, `ocx.config.example.json`, `README.txt`, `docs\user-guide.md`, `profiles-example\`, `MANIFEST.txt` 가 있습니다.
+1. 저장소 전체를 내려받으면(clone 또는 ZIP) 이 파일이 들어 있습니다. 이 파일만 받으려면 GitHub에서 파일을 열고 **Download raw file** 을 누르세요.
+2. (선택) 해시 확인: `certutil -hashfile ocx-windows-x64-package.zip SHA256` 의 결과가 `windows-x64/SHA256SUMS.txt` 와 같은지 봅니다.
+3. zip의 압축을 풉니다. 안에 `ocx.exe`, `opencode.exe`, `ocx.config.example.json`, `README.txt`, `docs\user-guide.md`, `profiles-example\`, `MANIFEST.txt` 가 있습니다.
+
+> 소스 코드는 저장소의 `manager/` 에 있고, 실행 파일은 `manager/scripts/` 의 스크립트로 다시 만들 수 있습니다 (`docs/user-guide.md` 의 "만드는 방법과 배포").
 
 ## 2. VS Code(또는 아무 터미널)에서 쓰려면 — PATH 등록과 설정 위치
 
@@ -77,7 +75,7 @@ release/
 ├─ ocx.config.example.json    설정 예시 (바로 열어볼 수 있게 따로 둠)
 ├─ docs/                       user-guide.md (사용 설명서), README-package.txt (zip 안에 들어 있는 안내문과 같음)
 ├─ profiles-example/           프로필 예시 (java, python, ai, analysis) — 직접 고쳐 쓰는 용도
-└─ windows-x64/                실행 파일 묶음(4조각), join-parts.bat, SHA256SUMS.txt, MANIFEST.txt
+└─ windows-x64/                ocx-windows-x64-package.zip (실행 파일 묶음), SHA256SUMS.txt, MANIFEST.txt
 ```
 
 ## 6. 이 파일들을 만든 방법
