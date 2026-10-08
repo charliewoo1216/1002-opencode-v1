@@ -458,6 +458,8 @@ API 키가 필요 없는 서버는 apiKey 를 EMPTY 로 둡니다. 주소는 htt
     body: `[ocx 가 실행되지 않거나 도움말이 안 보일 때] 순서대로 확인하세요.
   1. where ocx                    (cmd) 또는  Get-Command ocx  (PowerShell) — 어느 파일이 실행되는지 확인. 아무것도 안 나오면 PATH 등록이 안 된 것입니다 (ocx guide VSCode사용).
   2. ocx.exe version               버전과 실행 환경이 출력되면 ocx 자체는 정상입니다. 아무 출력도 없이 바로 끝나면 3~5를 확인하세요.
+  2-1. ocx-probe.exe                 별도 배포 파일(ocx-probe.zip)의 진단 프로그램입니다. ocx.exe 와 같은 폴더에 풀어 실행하세요. 단계별 결과를 화면과 ocx-probe.log 에 남깁니다 (어디까지 실행되는지, opencode.exe 호출이 되는지 확인).
+                                    [1] 줄도 안 나오면 프로세스가 시작 직후 외부(DRM·백신·실행 제한)에서 막힌 것입니다.
   3. echo %ERRORLEVEL%             (cmd) 방금 명령의 종료 코드. 0 이 아니거나 -1073741795(0xC000001D) 같은 큰 음수면 프로그램이 시작 도중 죽은 것입니다.
   4. Windows 보안이 막는 경우       반입한 파일은 "인터넷에서 받은 파일" 표시가 붙어 실행이 막힐 수 있습니다. 파일 속성에서 "차단 해제"를 체크하거나,
                                     PowerShell 에서  Unblock-File .\\ocx.exe, .\\opencode.exe  를 실행하세요. 백신(Defender 등)이 서명 없는 exe 를 격리했는지, 사내 실행 제한(AppLocker 등)이 있는지도 확인하세요.

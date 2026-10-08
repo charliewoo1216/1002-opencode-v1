@@ -71,6 +71,10 @@ writeFileSync(
    ocx plan --profile python "지시"     계획서 만들기
    ocx night                            퇴근 전에 걸어 두면 밤새 진행   →  아침에: ocx report
 
+[ocx 가 아무 출력 없이 끝날 때]
+   별도 파일 ocx-probe.zip (진단 프로그램)을 받아 같은 폴더 C:\\Markany\\opencode 에 풀고  .\\ocx-probe.exe  를 실행하세요. 단계별 결과가 화면과 ocx-probe.log 에 남습니다.
+   (그 결과와 ocx.exe version 의 종료 코드(echo %ERRORLEVEL%)를 알려 주세요.)
+
 프로젝트 폴더에는 .plan/ .notes/ .batch/ 폴더가 만들어집니다. Git 에 올리지 않으려면 .gitignore 에 추가하세요.
 
 ${ocName} 는 ocx 가 내부에서 사용하는 원본 OpenCode(폐쇄망 설정으로 빌드됨)입니다.

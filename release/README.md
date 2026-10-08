@@ -18,6 +18,7 @@
 - 폴더가 없으면 `C:\Markany\opencode` 를 만든 뒤 zip 의 **내용물**을 그 안에 풉니다 (`C:\Markany\opencode\ocx.exe` 가 되어야 하고, `C:\Markany\opencode\ocx-windows-x64-package\ocx.exe` 처럼 한 단계 더 깊어지지 않게 합니다).
 - 설정 파일도 `C:\Markany\opencode\ocx.config.json` 한 곳에만 둡니다 (프로젝트 폴더마다 복사하지 마세요).
 - 압축을 푼 임시 위치(다운로드 폴더 등)에 파일이 남아 있지 않게 풀고 나면 지우세요.
+- `ocx.exe`가 아무 출력 없이 끝나면 `windows-x64/ocx-probe.zip`(진단 프로그램, 약 30MB)을 받아 같은 폴더 `C:\Markany\opencode` 에 풀고 **`ocx-probe.exe`** 를 실행하세요. 단계별 결과가 화면과 `ocx-probe.log` 에 남습니다.
 - 다른 폴더에서 `ocx --help` 를 실행했을 때 **아무 출력 없이 종료**되는 현상은 DRM이 허용되지 않은 경로의 실행 파일을 막아서 생길 수 있습니다. 반드시 위 경로에서 실행해 보세요.
 
 ## 1. 내려받기
