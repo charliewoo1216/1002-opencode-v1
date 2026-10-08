@@ -79,7 +79,7 @@ Git 명령은 ocx가 실행하지 않습니다. 커밋은 직접 하세요.
 const sha = (f: string) => createHash("sha256").update(readFileSync(f)).digest("hex")
 const files = [ocxName, ocName, "ocx.config.example.json", "README.txt"]
 const manifest = [
-  `ocx 배포 폴더 (${target})`,
+  `ocx 배포 폴더 (${target}${basename(ocx).includes("baseline") ? ", baseline 빌드: AVX2 가 없는 CPU 에서도 동작" : ""})`,
   `만든 시각: ${new Date().toISOString()}`,
   "",
   ...files.map((f) => `${sha(join(dir, f)).slice(0, 16)}  ${(statSync(join(dir, f)).size / 1024).toFixed(0).padStart(8)}KB  ${f}`),
@@ -88,4 +88,3 @@ const manifest = [
 ].join("\n")
 writeFileSync(join(dir, "MANIFEST.txt"), manifest + "\n")
 console.log(`배포 폴더를 만들었습니다: ${dir}\n${manifest}`)
-void basename

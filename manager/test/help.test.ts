@@ -264,3 +264,34 @@ describe("사용 설명서", () => {
     expect(doc).toContain("Windows 실제 실행은 아직 검증하지 못했습니다")
   })
 })
+
+describe("진입 파일과 버전", () => {
+  test("src/main.ts 를 실행하면 조건 없이 도움말이 출력된다 (진입 파일 판별에 의존하지 않음)", () => {
+    const { spawnSync } = require("node:child_process") as typeof import("node:child_process")
+    const entry = join(import.meta.dir, "../src/main.ts")
+    const help = spawnSync("bun", ["run", entry, "--help"], { encoding: "utf8", timeout: 30000 })
+    expect(help.status).toBe(0)
+    expect(help.stdout).toContain("처음 쓰는 순서")
+    const ver = spawnSync("bun", ["run", entry, "--version"], { encoding: "utf8", timeout: 30000 })
+    expect(ver.status).toBe(0)
+    expect(ver.stdout).toContain("ocx 0.1.0")
+    expect(ver.stdout).toContain("원본 opencode 실행 명령")
+    const unknown = spawnSync("bun", ["run", entry, "help", "없는명령"], { encoding: "utf8", timeout: 30000 })
+    expect(unknown.status).toBe(2)
+  })
+
+  test("cli.ts 를 불러오기만 해서는 아무것도 실행되지 않는다", async () => {
+    const mod = await import("../src/cli")
+    expect(typeof mod.main).toBe("function")
+    expect(mod.COMMAND_NAMES).toContain("version")
+  })
+
+  test("ocx --version / ocx version 은 원본 opencode 가 아니라 ocx 의 버전과 환경을 보여 준다", async () => {
+    const a = await run(["--version"])
+    expect(a.code).toBe(0)
+    expect(a.out).toContain("ocx 0.1.0")
+    expect(a.out).toContain("실행 파일:")
+    expect(a.out).toContain("환경:")
+    expect((await run(["version"])).out).toContain("ocx 0.1.0")
+  })
+})

@@ -13,7 +13,7 @@
 
 ## 1. 내려받기
 
-실행 파일 묶음은 **`windows-x64/ocx-windows-x64-package.zip` 파일 하나**입니다 (약 87MB).
+실행 파일 묶음은 **`windows-x64/ocx-windows-x64-package.zip` 파일 하나**입니다 (약 87MB). AVX2가 없는 CPU(가상머신·구형 PC)에서도 도는 **baseline 빌드**입니다.
 
 1. 저장소 전체를 내려받으면(clone 또는 ZIP) 이 파일이 들어 있습니다. 이 파일만 받으려면 GitHub에서 파일을 열고 **Download raw file** 을 누르세요.
 2. (선택) 해시 확인: `certutil -hashfile ocx-windows-x64-package.zip SHA256` 의 결과가 `windows-x64/SHA256SUMS.txt` 와 같은지 봅니다.
@@ -59,6 +59,8 @@ ocx report                            아침에 결과 보기
 - 평소처럼 원본 `opencode`를 그대로 쓰는 것도 가능합니다 (이때는 ocx의 기능이 적용되지 않습니다).
 
 ## 4. 알아 둘 점
+
+- **도움말이 안 나오거나 실행이 안 될 때**: `ocx.exe version` 이 출력되는지 먼저 보세요. 안 되면 `docs/user-guide.md` 의 "문제 해결" 맨 위 5단계(PATH 확인, 종료 코드, 반입 파일 차단 해제 `Unblock-File`, 백신·AppLocker, 한글 깨짐)를 따라 확인하세요.
 
 - **Windows 10/11에서 실제로 실행해 본 적은 없습니다.** Linux에서 개발·검증했고 Windows 실행 파일은 빌드까지만 확인했습니다. 처음 쓰실 때 `ocx.exe config check --online` 부터 해 보시고, 문제가 있으면 알려 주세요.
 - 서명되지 않은 실행 파일이라 SmartScreen/백신 경고가 나올 수 있습니다.

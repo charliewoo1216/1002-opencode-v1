@@ -12,6 +12,7 @@ import { cmdPlan, cmdProfiles } from "./cli-plan"
 import { configPath, loadCfg } from "./cli-common"
 import { ConfigError, loadConfig, type OcxConfig } from "./config"
 import { renderCommandHelp, renderGuide, renderOverview } from "./help"
+import pkg from "../package.json"
 import { appendMetric, formatSummary, metricFromResult, readMetrics, summarizeByHour, summarizeLlm } from "./metrics"
 import { layoutFor } from "./paths"
 import { startMeasureProxy } from "./proxy"
@@ -106,6 +107,22 @@ export async function main(argv: string[]): Promise<number> {
 
 type Handler = (p: Parsed) => Promise<number> | number
 
+/** 버전과 실행 환경 정보. 문제가 생겼을 때 어떤 파일이 어떤 환경에서 돌고 있는지 확인하는 용도 */
+export function versionText(): string {
+  let opencode = "(설정 파일 없음)"
+  try {
+    opencode = loadConfig(configPath({})).opencode.command.join(" ")
+  } catch (e) {
+    opencode = e instanceof Error ? `(설정을 읽지 못함: ${e.message.split("\n")[0]})` : "(알 수 없음)"
+  }
+  return [
+    `ocx ${pkg.version}`,
+    `실행 파일: ${process.execPath}`,
+    `환경: ${process.platform} ${process.arch}, Bun ${Bun.version}`,
+    `원본 opencode 실행 명령: ${opencode}`,
+  ].join("\n")
+}
+
 /** ocx가 직접 처리하는 명령. 여기에 없는 명령은 원본 opencode로 그대로 전달한다 */
 const HANDLERS: Record<string, Handler> = {
   run: cmdRun,
@@ -118,6 +135,7 @@ const HANDLERS: Record<string, Handler> = {
   profiles: cmdProfiles,
   config: cmdConfig,
   guide: (p) => (console.log(renderGuide(p.positionals[0])), 0),
+  version: () => (console.log(versionText()), 0),
   help: (p) => {
     const target = p.positionals[0]
     if (target) {
@@ -135,6 +153,11 @@ export const COMMAND_NAMES = Object.keys(HANDLERS)
 
 async function dispatch(argv: string[]): Promise<number> {
   const p = parseArgs(argv)
+  // ocx --version : 버전과 실행 환경 (원본 opencode 의 --version 이 아님)
+  if (p.command === undefined && p.flags.version === true) {
+    console.log(versionText())
+    return 0
+  }
   // 인자가 없거나 --help 만 있으면 개요 도움말
   if (p.command === undefined) {
     if (argv.length === 0 || p.flags.help) {
@@ -151,8 +174,4 @@ async function dispatch(argv: string[]): Promise<number> {
     if (text) return (console.log(text), 0)
   }
   return handler(p)
-}
-
-if (import.meta.path === Bun.main) {
-  process.exit(await main(process.argv.slice(2)))
 }

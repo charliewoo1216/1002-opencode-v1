@@ -31,6 +31,7 @@ ocx — OpenCode 확장 관리 프로그램 (폐쇄망·로컬 LLM용)
   ocx run       원본 opencode run을 실행하고 속도를 기록 (모드 기능 없이 한 번 실행)
   ocx profiles  사용할 수 있는 프로필 목록
   ocx config    설정 확인: 현재 적용된 설정, 점검, 항목 설명, 예시
+  ocx version   ocx 버전과 실행 환경 정보 (문제가 생겼을 때 가장 먼저 확인)
   ocx guide     상황별 사용 가이드
   ocx (그 외)     원본 opencode 명령으로 그대로 전달합니다 (예: ocx models)
 
@@ -249,6 +250,16 @@ API 키가 필요 없는 서버는 apiKey 를 EMPTY 로 둡니다. 주소는 htt
 ### 문제 해결  (`ocx guide 문제해결`)
 
 ```text
+[ocx 가 실행되지 않거나 도움말이 안 보일 때] 순서대로 확인하세요.
+  1. where ocx                    (cmd) 또는  Get-Command ocx  (PowerShell) — 어느 파일이 실행되는지 확인. 아무것도 안 나오면 PATH 등록이 안 된 것입니다 (ocx guide VSCode사용).
+  2. ocx.exe version               버전과 실행 환경이 출력되면 ocx 자체는 정상입니다. 아무 출력도 없이 바로 끝나면 3~5를 확인하세요.
+  3. echo %ERRORLEVEL%             (cmd) 방금 명령의 종료 코드. 0 이 아니거나 -1073741795(0xC000001D) 같은 큰 음수면 프로그램이 시작 도중 죽은 것입니다.
+  4. Windows 보안이 막는 경우       반입한 파일은 "인터넷에서 받은 파일" 표시가 붙어 실행이 막힐 수 있습니다. 파일 속성에서 "차단 해제"를 체크하거나,
+                                    PowerShell 에서  Unblock-File .\ocx.exe, .\opencode.exe  를 실행하세요. 백신(Defender 등)이 서명 없는 exe 를 격리했는지, 사내 실행 제한(AppLocker 등)이 있는지도 확인하세요.
+  5. 한글이 깨져 보이는 경우         cmd 에서  chcp 65001  을 먼저 실행하세요 (Windows Terminal·VS Code 터미널 권장).
+  이 배포본은 AVX2 가 없는 CPU(가상머신, 구형 PC)에서도 도는 baseline 빌드입니다. 그래도 안 되면 version 명령의 출력과 종료 코드를 알려 주세요.
+
+[그 밖의 문제]
 - "설정 오류"가 나옵니다           → ocx config check 로 어느 항목이 문제인지 확인하세요.
 - 서버에 연결되지 않습니다           → ocx config check --online. 주소·포트·프록시 환경변수(HTTP_PROXY)가 사내 서버를 우회하도록 NO_PROXY 에 서버 주소를 넣어야 할 수 있습니다.
 - night 가 시작하지 않습니다         → 승인된 계획서가 필요합니다. ocx plan --status 로 확인하고, 계획서를 고쳤다면 ocx plan --approve.
@@ -560,6 +571,31 @@ ocx config — 설정 확인: 현재 적용된 설정, 점검, 항목 설명, �
 원본 opencode와의 관계: 원본 opencode의 설정(opencode.json)은 건드리지 않습니다. ocx가 실행할 때마다 환경변수로 주입합니다.
 
 관련: ocx guide 설정
+```
+
+### ocx version
+
+```text
+ocx version — ocx 버전과 실행 환경 정보 (문제가 생겼을 때 가장 먼저 확인)
+
+사용법
+  ocx version
+  ocx --version
+
+옵션
+  --config <파일>  ocx 설정 파일(JSON) 경로. 환경변수 OCX_CONFIG로도 지정 가능 (기본값: ./ocx.config.json)
+
+예시
+  ocx version
+      ocx 버전, 실행 파일 경로, 운영체제·CPU, 사용할 원본 opencode 실행 명령
+
+알아 둘 점
+  - ocx 가 실행되지 않거나 도움말이 안 보이면 먼저 이 명령이 출력되는지 확인하세요.
+  - 원본 opencode 의 버전은 opencode --version 으로 봅니다.
+
+원본 opencode와의 관계: ocx 전용 기능입니다.
+
+관련: ocx config
 ```
 
 ### ocx guide
