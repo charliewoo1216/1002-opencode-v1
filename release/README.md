@@ -11,13 +11,22 @@
 
 둘 다 필요하고, 같은 폴더에 두면 됩니다. 자세한 설명은 `docs/user-guide.md`.
 
+## ⚠ 설치 위치는 반드시 `C:\Markany\opencode` (다른 경로 금지)
+
+사내 보안(DRM) 정책상 **`ocx.exe`, `opencode.exe` 를 포함한 모든 압축 해제 파일은 반드시 `C:\Markany\opencode` 폴더에만 둡니다.** 바탕화면·다운로드·문서·프로젝트 폴더 등 **다른 경로에 풀거나 복사해 두면 안 됩니다** (전사 DRM 문제 발생). 이 문서의 모든 경로 예시는 이 고정 경로 기준입니다.
+
+- 폴더가 없으면 `C:\Markany\opencode` 를 만든 뒤 zip 의 **내용물**을 그 안에 풉니다 (`C:\Markany\opencode\ocx.exe` 가 되어야 하고, `C:\Markany\opencode\ocx-windows-x64-package\ocx.exe` 처럼 한 단계 더 깊어지지 않게 합니다).
+- 설정 파일도 `C:\Markany\opencode\ocx.config.json` 한 곳에만 둡니다 (프로젝트 폴더마다 복사하지 마세요).
+- 압축을 푼 임시 위치(다운로드 폴더 등)에 파일이 남아 있지 않게 풀고 나면 지우세요.
+- 다른 폴더에서 `ocx --help` 를 실행했을 때 **아무 출력 없이 종료**되는 현상은 DRM이 허용되지 않은 경로의 실행 파일을 막아서 생길 수 있습니다. 반드시 위 경로에서 실행해 보세요.
+
 ## 1. 내려받기
 
 실행 파일 묶음은 **`windows-x64/ocx-windows-x64-package.zip` 파일 하나**입니다 (약 87MB). AVX2가 없는 CPU(가상머신·구형 PC)에서도 도는 **baseline 빌드**입니다.
 
 1. 저장소 전체를 내려받으면(clone 또는 ZIP) 이 파일이 들어 있습니다. 이 파일만 받으려면 GitHub에서 파일을 열고 **Download raw file** 을 누르세요.
 2. (선택) 해시 확인: `certutil -hashfile ocx-windows-x64-package.zip SHA256` 의 결과가 `windows-x64/SHA256SUMS.txt` 와 같은지 봅니다.
-3. zip의 압축을 풉니다. 안에 `ocx.exe`, `opencode.exe`, `ocx.config.example.json`, `README.txt`, `docs\user-guide.md`, `profiles-example\`, `MANIFEST.txt` 가 있습니다.
+3. zip의 압축을 **`C:\Markany\opencode` 에** 풉니다 (아래 ⚠ 설치 위치 참고, 다른 경로 금지). 안에 `ocx.exe`, `opencode.exe`, `ocx.config.example.json`, `README.txt`, `docs\user-guide.md`, `profiles-example\`, `MANIFEST.txt` 가 있습니다.
 
 > 소스 코드는 저장소의 `manager/` 에 있고, 실행 파일은 `manager/scripts/` 의 스크립트로 다시 만들 수 있습니다 (`docs/user-guide.md` 의 "만드는 방법과 배포").
 
@@ -26,13 +35,13 @@
 `ocx`는 원본 `opencode`처럼 **프로젝트 폴더의 터미널에서 실행**하는 프로그램입니다. 명령 이름은 **`ocx`** 입니다 (`ocx.exe`).
 
 **① PATH 등록 (한 번만)**
-- 압축을 푼 폴더(`ocx.exe`와 `opencode.exe`가 있는 폴더, 예: `C:\tools\ocx`)를 Windows PATH에 추가합니다.
+- 설치 폴더 **`C:\Markany\opencode`** (`ocx.exe`와 `opencode.exe`가 있는 고정 경로)를 Windows PATH에 추가합니다.
   시작 메뉴에서 "환경 변수" 검색 → "계정에 대한 환경 변수 편집" → 사용자 변수 `Path` → 편집 → 새로 만들기 → 폴더 경로.
 - **VS Code를 완전히 종료했다가 다시 실행**해야 터미널에 반영됩니다.
 - 원본 `opencode`를 이미 PATH에 등록해 두셨다면 그대로 두세요. `ocx`는 기본으로 `ocx.exe`와 **같은 폴더의 `opencode.exe`** 를 쓰고, 없으면 PATH의 `opencode`를 씁니다. PATH의 기존 `opencode`를 쓰고 싶으면 설정에 `"opencode": { "command": ["opencode"] }` 를 적으세요 (원본 버전이 다르면 일부 기능이 다르게 동작할 수 있습니다).
 
 **② 설정 파일 (JSON) — 한 곳에 두고 모든 프로젝트가 같이 쓰기 (권장)**
-1. `ocx.config.example.json` 을 **`ocx.config.json`** 으로 복사합니다 (예: `C:\tools\ocx\ocx.config.json`).
+1. `ocx.config.example.json` 을 **`ocx.config.json`** 으로 복사합니다 (반드시 `C:\Markany\opencode\ocx.config.json`).
 2. 메모장으로 열어 `models` 의 `baseURL` 과 `model` 을 사내 LLM 서버에 맞게 고칩니다.
    - 주소는 `http://서버주소:포트/v1` 형식이고 http도 됩니다.
    - API 키가 필요 없는 서버는 `"apiKey": "EMPTY"` 를 그대로 둡니다.

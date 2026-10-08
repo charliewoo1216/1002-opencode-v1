@@ -1,9 +1,9 @@
 ocx 배포 폴더 (windows-x64, baseline 빌드: AVX2 가 없는 CPU 에서도 동작)
-만든 시각: 2026-10-08T15:59:00.377Z
+만든 시각: 2026-10-08T16:08:51.495Z
 
-cf9a3ad2472038bd     84251KB  ocx.exe
+4b210da045ec9fe9     84253KB  ocx.exe
 d16cefb1acbc0811    125026KB  opencode.exe
 2f82374d23db5351         1KB  ocx.config.example.json
-5c1fc2c44e1480c7         2KB  README.txt
+716f359ef5de6b92         3KB  README.txt
 
 (해시는 SHA-256의 앞 16자리입니다)

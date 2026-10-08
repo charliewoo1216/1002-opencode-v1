@@ -109,15 +109,19 @@ VS Code 터미널에서 매번 쓰려면 ocx 폴더를 PATH 에 등록하세요:
 ```text
 ocx 는 원본 opencode 와 마찬가지로 프로젝트 폴더의 터미널에서 실행하는 프로그램입니다. 명령 이름은 `ocx` 입니다.
 
+[필수] 설치 위치는 C:\Markany\opencode 하나뿐입니다.
+   - 사내 보안(DRM) 정책상 ocx.exe, opencode.exe 등 모든 파일은 C:\Markany\opencode 에만 두어야 합니다. 다른 경로에 풀거나 복사하면 안 됩니다.
+   - 다른 폴더에서 ocx --help 가 아무 출력 없이 끝난다면 DRM 이 해당 경로의 실행을 막은 것일 수 있습니다. 위 경로에서 실행해 보세요.
+
 1. PATH 에 등록하기 (한 번만)
-   - ocx.exe 와 opencode.exe 가 들어 있는 폴더(예: C:\tools\ocx)를 Windows PATH 에 추가합니다.
+   - 설치 폴더 C:\Markany\opencode (ocx.exe 와 opencode.exe 가 있는 고정 경로)를 Windows PATH 에 추가합니다.
      시작 메뉴에서 "환경 변수" 검색 → "계정에 대한 환경 변수 편집" → 사용자 변수 Path → 편집 → 새로 만들기 → 폴더 경로 입력.
    - 등록한 뒤에는 VS Code 를 완전히 종료했다가 다시 실행해야 터미널에 반영됩니다.
    - 원본 opencode 를 이미 PATH 에 등록해 두셨다면 그대로 두세요. ocx 는 기본으로 ocx.exe 와 같은 폴더의 opencode.exe 를 쓰고, 없으면 PATH 의 opencode 를 씁니다.
      PATH 에 있는 기존 opencode 를 쓰고 싶으면 설정에 "opencode": { "command": ["opencode"] } 를 적으세요 (원본 버전이 달라지면 일부 기능이 다르게 동작할 수 있습니다).
 
 2. 설정 파일은 한 곳에 두고 모든 프로젝트가 같이 쓰기 (권장)
-   - ocx.config.example.json 을 ocx.config.json 으로 복사해 모델 주소를 고치고(예: C:\tools\ocx\ocx.config.json),
+   - ocx.config.example.json 을 ocx.config.json 으로 복사해 모델 주소를 고치고(반드시 C:\Markany\opencode\ocx.config.json),
      사용자 환경 변수 OCX_CONFIG 를 그 파일의 전체 경로로 지정합니다. 그러면 어느 프로젝트에서든 설정을 찾습니다.
    - 프로젝트마다 다른 설정을 쓰려면 그 프로젝트 폴더에 ocx.config.json 을 두거나 --config 파일 을 지정하세요.
      (OCX_CONFIG 도 --config 도 없으면 현재 폴더의 ocx.config.json 을 찾습니다)
@@ -256,6 +260,7 @@ API 키가 필요 없는 서버는 apiKey 를 EMPTY 로 둡니다. 주소는 htt
   3. echo %ERRORLEVEL%             (cmd) 방금 명령의 종료 코드. 0 이 아니거나 -1073741795(0xC000001D) 같은 큰 음수면 프로그램이 시작 도중 죽은 것입니다.
   4. Windows 보안이 막는 경우       반입한 파일은 "인터넷에서 받은 파일" 표시가 붙어 실행이 막힐 수 있습니다. 파일 속성에서 "차단 해제"를 체크하거나,
                                     PowerShell 에서  Unblock-File .\ocx.exe, .\opencode.exe  를 실행하세요. 백신(Defender 등)이 서명 없는 exe 를 격리했는지, 사내 실행 제한(AppLocker 등)이 있는지도 확인하세요.
+  4-1. 사내 DRM 이 막는 경우          설치 폴더가 C:\Markany\opencode 가 아니면 DRM 이 실행을 조용히 막아 '아무 출력 없이 종료'될 수 있습니다. 모든 파일을 이 폴더에 두고 거기서 실행하세요.
   5. 한글이 깨져 보이는 경우         cmd 에서  chcp 65001  을 먼저 실행하세요 (Windows Terminal·VS Code 터미널 권장).
   이 배포본은 AVX2 가 없는 CPU(가상머신, 구형 PC)에서도 도는 baseline 빌드입니다. 그래도 안 되면 version 명령의 출력과 종료 코드를 알려 주세요.
 
