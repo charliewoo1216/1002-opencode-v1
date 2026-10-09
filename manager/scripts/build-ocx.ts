@@ -1,5 +1,6 @@
 // ocx 실행 파일 빌드 (Bun 단일 실행 파일)
-// 사용: bun run scripts/build-ocx.ts [--target windows-x64|windows-x64-baseline|linux-x64|native] [--out dist]
+// 사용: bun run scripts/build-ocx.ts [--target windows-x64-baseline(기본)|windows-x64|linux-x64|native] [--out dist]
+// 기본은 AVX2 가 없는 CPU(가상머신, 구형 PC)에서도 도는 baseline 빌드다. 표준 빌드는 AVX2 가 없으면 아무 메시지 없이 죽을 수 있다.
 import { spawnSync } from "node:child_process"
 import { mkdirSync, statSync } from "node:fs"
 import { join } from "node:path"
@@ -8,7 +9,7 @@ const arg = (name: string, def: string) => {
   const i = process.argv.indexOf(`--${name}`)
   return i >= 0 ? (process.argv[i + 1] ?? def) : def
 }
-const target = arg("target", "windows-x64")
+const target = arg("target", "windows-x64-baseline")
 const outDir = join(import.meta.dir, "..", arg("out", "dist"))
 const root = join(import.meta.dir, "..")
 
@@ -31,7 +32,7 @@ if (gen.status !== 0) process.exit(gen.status ?? 1)
 mkdirSync(outDir, { recursive: true })
 const isWin = target.startsWith("windows")
 const outfile = join(outDir, `ocx-${target}${isWin ? ".exe" : ""}`)
-const args = ["build", "--compile", join(root, "src/cli.ts"), "--outfile", outfile, "--minify"]
+const args = ["build", "--compile", join(root, "src/main.ts"), "--outfile", outfile, "--minify"]
 const t = BUN_TARGET[target]
 if (t) args.push(`--target=${t}`)
 const r = spawnSync("bun", args, { stdio: "inherit", cwd: root })

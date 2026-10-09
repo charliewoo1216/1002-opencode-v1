@@ -71,7 +71,7 @@ suite("밤 모드 비정상 종료 복구", () => {
     mock.control.delayRules = [{ match: "[이번 작업] T2:", ms: 120_000 }] // T2의 요청은 오래 걸린다
 
     // 1) 별도 프로세스로 실행
-    const proc = spawn("bun", ["run", join(import.meta.dir, "../src/cli.ts"), "night", "--config", cfgFile, "--dir", work, "--now"], {
+    const proc = spawn("bun", ["run", join(import.meta.dir, "../src/main.ts"), "night", "--config", cfgFile, "--dir", work, "--now"], {
       env: { ...process.env, OPENCODE_TEST_HOME: home },
       stdio: ["ignore", "ignore", "ignore"],
     })

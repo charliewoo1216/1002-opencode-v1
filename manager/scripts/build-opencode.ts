@@ -3,7 +3,7 @@
 // 상태 코드 확인 없이 실행 파일에 내장한다(접속이 막히면 오류 본문이 내장되어 실행이 전부 실패함).
 // 이 스크립트는 (1) 업스트림 build.ts 를 수정하지 않고 타깃만 고르는 사본을 만들고 (2) 유효한 빈 모델 스냅샷을 지정한다.
 //
-// 사용: bun run scripts/build-opencode.ts --src <업스트림 폴더> [--target windows-x64|windows-x64-baseline|linux-x64] [--out dist] [--skip-install]
+// 사용: bun run scripts/build-opencode.ts --src <업스트림 폴더> [--target windows-x64-baseline(기본)|windows-x64|linux-x64] [--out dist] [--skip-install]
 import { spawnSync } from "node:child_process"
 import { copyFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs"
 import { join, resolve } from "node:path"
@@ -20,7 +20,7 @@ const fail = (msg: string): never => {
 
 const managerRoot = join(import.meta.dir, "..")
 const src = resolve(arg("src") ?? fail("--src <업스트림 opencode 폴더> 가 필요합니다"))
-const target = arg("target") ?? "windows-x64"
+const target = arg("target") ?? "windows-x64-baseline"
 const outDir = resolve(managerRoot, arg("out") ?? "dist")
 const modelsJson = resolve(arg("models-json") ?? join(managerRoot, "build/models-empty.json"))
 

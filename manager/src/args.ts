@@ -5,7 +5,7 @@ export interface Parsed {
   positionals: string[]
 }
 
-const BOOLEAN_FLAGS = new Set(["continue", "auto", "help", "json", "no-proxy", "no-analyze", "yes", "approve", "status", "light", "resume", "now", "dry-run", "retry-held", "online"])
+const BOOLEAN_FLAGS = new Set(["continue", "auto", "help", "json", "no-proxy", "no-analyze", "yes", "approve", "status", "light", "resume", "now", "dry-run", "retry-held", "online", "version"])
 
 /** 의존성 없이 단순 파싱: --키 값, --키(불리언), -- 이후는 전부 위치 인자 */
 export function parseArgs(argv: string[]): Parsed {

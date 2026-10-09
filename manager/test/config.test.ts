@@ -1,5 +1,8 @@
 import { describe, expect, test } from "bun:test"
-import { ConfigError, DAY_DEFAULTS, buildOpencodeConfig, closedNetworkEnv, normalizeConfig, opencodeModelRef } from "../src/config"
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs"
+import { tmpdir } from "node:os"
+import { join } from "node:path"
+import { ConfigError, DAY_DEFAULTS, defaultOpencodeCommand, loadConfig, buildOpencodeConfig, closedNetworkEnv, normalizeConfig, opencodeModelRef } from "../src/config"
 
 const base = {
   models: {
@@ -111,5 +114,29 @@ describe("안전 규칙 설정", () => {
     expect(() => normalizeConfig({ ...b, safety: { extraBlocked: "docker" } })).toThrow("safety.extraBlocked")
     expect(() => normalizeConfig({ ...b, safety: { extraBlocked: ["rm -rf"] } })).toThrow("safety.extraBlocked")
     expect(() => normalizeConfig({ ...b, safety: 1 })).toThrow("safety")
+  })
+})
+
+describe("opencode 실행 파일 위치", () => {
+  const b = { models: { a: { baseURL: "http://h/v1", model: "m" } } }
+
+  test("생략하면 ocx 와 같은 폴더의 opencode 를, 없으면 PATH 의 opencode 를 쓴다", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ocx-exe-"))
+    const exeName = process.platform === "win32" ? "opencode.exe" : "opencode"
+    expect(defaultOpencodeCommand(join(dir, "ocx"))).toEqual(["opencode"])
+    writeFileSync(join(dir, exeName), "")
+    expect(defaultOpencodeCommand(join(dir, "ocx"))).toEqual([join(dir, exeName)])
+  })
+
+  test("상대 경로로 적은 실행 파일은 현재 폴더가 아니라 설정 파일이 있는 폴더 기준이다", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ocx-cfgdir-"))
+    mkdirSync(join(dir, "bin"))
+    const file = join(dir, "ocx.config.json")
+    writeFileSync(file, JSON.stringify({ ...b, opencode: { command: ["./bin/opencode", "--x"] } }))
+    expect(loadConfig(file).opencode.command).toEqual([join(dir, "bin/opencode"), "--x"])
+    writeFileSync(file, JSON.stringify({ ...b, opencode: { command: ["opencode"] } }))
+    expect(loadConfig(file).opencode.command).toEqual(["opencode"]) // 이름만 적으면 PATH 에서 찾는다
+    writeFileSync(file, JSON.stringify({ ...b, opencode: { command: ["C:/tools/opencode.exe"] } }))
+    expect(loadConfig(file).opencode.command).toEqual(["C:/tools/opencode.exe"]) // 절대 경로는 그대로
   })
 })

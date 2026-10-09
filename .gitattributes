@@ -1,0 +1,5 @@
+# 배치 파일과 분할 압축 조각은 git이 줄바꿈을 바꾸지 않게 그대로 둔다
+*.bat -text
+*.part* binary
+*.exe binary
+*.zip binary

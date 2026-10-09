@@ -118,6 +118,15 @@ describe("사용 가이드", () => {
     expect(renderGuide("없음없음")).toContain("알 수 없는 주제")
   })
 
+  test("VS Code/PATH 가이드가 있고, 주제는 대소문자를 구분하지 않고 찾는다", () => {
+    expect(GUIDE_TOPICS).toContain("VSCode사용")
+    const g = renderGuide("vscode")
+    expect(g).toContain("PATH")
+    expect(g).toContain("OCX_CONFIG")
+    expect(g).toContain(".gitignore")
+    expect(renderOverview()).toContain("ocx guide VSCode사용")
+  })
+
   test("ocx guide 명령", async () => {
     expect((await run(["guide"])).out).toContain("주제를 골라")
     expect((await run(["guide", "안전규칙"])).out).toContain("Git")
@@ -253,5 +262,36 @@ describe("사용 설명서", () => {
     for (const t of GUIDE_TOPICS) expect(doc).toContain(`ocx guide ${t}`)
     expect(doc).toContain("## 알려진 한계")
     expect(doc).toContain("Windows 실제 실행은 아직 검증하지 못했습니다")
+  })
+})
+
+describe("진입 파일과 버전", () => {
+  test("src/main.ts 를 실행하면 조건 없이 도움말이 출력된다 (진입 파일 판별에 의존하지 않음)", () => {
+    const { spawnSync } = require("node:child_process") as typeof import("node:child_process")
+    const entry = join(import.meta.dir, "../src/main.ts")
+    const help = spawnSync("bun", ["run", entry, "--help"], { encoding: "utf8", timeout: 30000 })
+    expect(help.status).toBe(0)
+    expect(help.stdout).toContain("처음 쓰는 순서")
+    const ver = spawnSync("bun", ["run", entry, "--version"], { encoding: "utf8", timeout: 30000 })
+    expect(ver.status).toBe(0)
+    expect(ver.stdout).toContain("ocx 0.1.0")
+    expect(ver.stdout).toContain("원본 opencode 실행 명령")
+    const unknown = spawnSync("bun", ["run", entry, "help", "없는명령"], { encoding: "utf8", timeout: 30000 })
+    expect(unknown.status).toBe(2)
+  })
+
+  test("cli.ts 를 불러오기만 해서는 아무것도 실행되지 않는다", async () => {
+    const mod = await import("../src/cli")
+    expect(typeof mod.main).toBe("function")
+    expect(mod.COMMAND_NAMES).toContain("version")
+  })
+
+  test("ocx --version / ocx version 은 원본 opencode 가 아니라 ocx 의 버전과 환경을 보여 준다", async () => {
+    const a = await run(["--version"])
+    expect(a.code).toBe(0)
+    expect(a.out).toContain("ocx 0.1.0")
+    expect(a.out).toContain("실행 파일:")
+    expect(a.out).toContain("환경:")
+    expect((await run(["version"])).out).toContain("ocx 0.1.0")
   })
 })
